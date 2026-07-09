@@ -49,7 +49,15 @@ function normalizeTime(value: string): string {
     const minutes = match[2] ? Number.parseInt(match[2], 10) : 0;
     const period = match[3]?.toLowerCase();
 
-    if (hours < 1 || hours > 12 || minutes > 59) {
+    if (minutes > 59) {
+        throw new Error("Time contains an invalid minute value.");
+    }
+
+    if (period && (hours < 1 || hours > 12)) {
+        throw new Error("Time contains an invalid hour value for 12-hour format.");
+    }
+
+    if (!period && (hours < 0 || hours > 23)) {
         throw new Error("Time contains an invalid hour or minute value.");
     }
 
