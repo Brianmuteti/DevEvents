@@ -160,6 +160,9 @@ eventSchema.pre("save", async function (this: IEvent) {
         }
     }
 
+    this.agenda = this.agenda.map((item) => item.trim()).filter(Boolean);
+    this.tags = this.tags.map((item) => item.trim()).filter(Boolean);
+
     if (!Array.isArray(this.agenda) || this.agenda.length === 0) {
         throw new Error("Agenda must contain at least one item.");
     }
@@ -167,9 +170,6 @@ eventSchema.pre("save", async function (this: IEvent) {
     if (!Array.isArray(this.tags) || this.tags.length === 0) {
         throw new Error("Tags must contain at least one item.");
     }
-
-    this.agenda = this.agenda.map((item) => item.trim()).filter(Boolean);
-    this.tags = this.tags.map((item) => item.trim()).filter(Boolean);
 
     if (this.isModified("title") || !this.slug) {
         this.slug = slugify(this.title);
