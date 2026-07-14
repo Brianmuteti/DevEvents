@@ -9,10 +9,25 @@ interface Props {
     image: string;
     slug: string;
     location: string;
-    Date: string;
-    Time: string;
+    date: string;
+    time: string;
 }
-const EventCard = ({ title, image, slug, location, Date, Time }: Props) => {
+const EventCard = ({ title, image, slug, location, date, time }: Props) => {
+    const formatDate = (value: string) => {
+        if (!value) return "";
+
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+            return value;
+        }
+
+        const parsedDate = new Date(value);
+        if (Number.isNaN(parsedDate.getTime())) {
+            return value;
+        }
+
+        return parsedDate.toISOString().slice(0, 10);
+    };
+
     const handleClick = () => {
         posthog.capture("featured_event_selected", {
             event_slug: slug,
@@ -49,7 +64,7 @@ const EventCard = ({ title, image, slug, location, Date, Time }: Props) => {
                         width={14}
                         height={14}
                     />
-                    <p>{Date}</p>
+                    <p>{formatDate(date)}</p>
                 </div>
                 <div>
                     <Image
@@ -58,7 +73,7 @@ const EventCard = ({ title, image, slug, location, Date, Time }: Props) => {
                         width={14}
                         height={14}
                     />
-                    <p>{Time}</p>
+                    <p>{time}</p>
                 </div>
             </div>
         </Link>

@@ -7,6 +7,15 @@ const assetsHost =
         : "https://us-assets.i.posthog.com";
 
 const nextConfig: NextConfig = {
+    cacheComponents: true,
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "res.cloudinary.com",
+            },
+        ],
+    },
     async rewrites() {
         if (!posthogHost) {
             return [];
