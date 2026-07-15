@@ -3,6 +3,15 @@
 import { Event } from "@/database/event.model";
 import connectToDatabase from "@/lib/mongodb";
 
+export const getEventBySlug = async (slug: string) => {
+    try {
+        await connectToDatabase();
+        return await Event.findOne({ slug }).lean();
+    } catch {
+        return null;
+    }
+};
+
 export const getSimilarEventsBySlug = async (slug: string) => {
     try {
         await connectToDatabase();

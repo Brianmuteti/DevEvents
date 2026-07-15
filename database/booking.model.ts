@@ -9,6 +9,7 @@ import { Event } from "./event.model";
 
 export interface IBooking extends Document {
     eventId: Types.ObjectId;
+    slug: string;
     email: string;
     createdAt: Date;
     updatedAt: Date;
@@ -20,6 +21,12 @@ const bookingSchema = new Schema<IBooking>(
             type: Schema.Types.ObjectId,
             ref: "Event",
             required: [true, "eventId is required"],
+        },
+        slug: {
+            type: String,
+            required: [true, "Slug is required"],
+            trim: true,
+            lowercase: true,
         },
         email: {
             type: String,
@@ -44,10 +51,19 @@ bookingSchema.pre("save", async function (this: IBooking) {
         throw new Error("eventId is required.");
     }
 
-    const eventExists = await Event.exists({ _id: this.eventId });
+    if (!this.slug) {
+        throw new Error("slug is required.");
+    }
+
+    const eventExists = await Event.exists({
+        _id: this.eventId,
+        slug: this.slug,
+    });
 
     if (!eventExists) {
-        throw new Error("Referenced event does not exist.");
+        throw new Error(
+            "Referenced event does not exist or slug does not match.",
+        );
     }
 });
 
